@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "docker" {
-  host = "unix:///Users/sstewart/.colima/default/docker.sock"
+  host = var.docker_host
 }
 
 resource "docker_image" "nginx" {
@@ -17,10 +17,18 @@ resource "docker_image" "nginx" {
 }
 
 resource "docker_container" "nginx" {
-  image = docker_image.nginx.image_id
-  name  = "tutorial"
+  image        = docker_image.nginx.image_id
+  name         = "tutorial"
+  network_mode = "bridge"
   ports {
     internal = 80
     external = 8000
   }
+}
+
+variable "docker_host" {
+  description = "Docker host"
+  type        = string
+  default     = "unix:///var/run/docker.sock"
+  nullable    = false
 }
