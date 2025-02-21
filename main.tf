@@ -1,34 +1,57 @@
 terraform {
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "3.0.2"
+    keycloak = {
+      source  = "keycloak/keycloak"
+      version = ">= 5.0.0"
     }
   }
 }
 
-provider "docker" {
-  host = var.docker_host
+provider "keycloak" {
+  client_id = "admin-cli"
+  username  = "admin"
+  password  = "admin"
+  url       = "http://localhost:8080"
 }
 
-resource "docker_image" "nginx" {
-  name         = "nginx:latest"
-  keep_locally = false
+resource "keycloak_realm" "main" {
+  realm = "playground"
+  # depends_on = [docker_container.keycloak]
 }
 
-resource "docker_container" "nginx" {
-  image        = docker_image.nginx.image_id
-  name         = "tutorial"
-  network_mode = "bridge"
-  ports {
-    internal = 80
-    external = 8000
+resource "keycloak_openid_client" "main" {
+  realm_id              = keycloak_realm.main.id
+  client_id             = "demo"
+  access_type           = "CONFIDENTIAL"
+  standard_flow_enabled = true
+  valid_redirect_uris   = ["*"]
+}
+
+resource "keycloak_user" "main" {
+  realm_id = keycloak_realm.main.id
+  username = "alice"
+
+  email      = "alice@domain.com"
+  first_name = "Alice"
+  last_name  = "Aliceberg"
+
+  initial_password {
+    value = "password"
   }
 }
 
-variable "docker_host" {
-  description = "Docker host"
-  type        = string
-  default     = "unix:///var/run/docker.sock"
-  nullable    = false
+data "keycloak_realm_keys" "realm_keys" {
+  realm_id   = keycloak_realm.main.id
+  algorithms = ["RS256"]
+  status     = ["ACTIVE", "PASSIVE"]
+}
+
+# show certificate of first key:
+output "certificate" {
+  value = data.keycloak_realm_keys.realm_keys.keys[0].certificate
+}
+
+# show public key of first key:
+output "public_key" {
+  value = data.keycloak_realm_keys.realm_keys.keys[0].public_key
 }
