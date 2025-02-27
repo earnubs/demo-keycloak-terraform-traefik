@@ -7,9 +7,6 @@ terraform {
   }
 }
 
-# Traefik
-
-
 # Keycloak
 
 provider "keycloak" {
@@ -25,11 +22,12 @@ resource "keycloak_realm" "main" {
 }
 
 resource "keycloak_openid_client" "main" {
-  realm_id              = keycloak_realm.main.id
-  client_id             = "demo"
-  access_type           = "CONFIDENTIAL"
-  standard_flow_enabled = true
-  valid_redirect_uris   = ["*"]
+  realm_id                   = keycloak_realm.main.id
+  client_id                  = "demo"
+  access_type                = "CONFIDENTIAL"
+  standard_flow_enabled      = true
+  valid_redirect_uris        = ["*"]
+  pkce_code_challenge_method = "S256"
 }
 
 resource "keycloak_user" "main" {

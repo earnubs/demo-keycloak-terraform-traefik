@@ -26,17 +26,24 @@ provider "registry.terraform.io/keycloak/keycloak" {
   ]
 }
 
-provider "registry.terraform.io/kong/kong-gateway" {
-  version     = "0.3.0"
-  constraints = "0.3.0"
+provider "registry.terraform.io/kreuzwerker/docker" {
+  version     = "3.0.2"
+  constraints = "3.0.2"
   hashes = [
-    "h1:49S3RyJ61ivuUmxPwvhzxp9nzjbJqT6HRlDXBprHsjM=",
-    "zh:1e43dabb1b3a450d7d35b3ccb418997d3ddeaa5fe3d83f3981e7172c2e68df07",
-    "zh:236bc65ecbc54b5d02ba5b5adab88c24932f2b661f37f1ab8a24ab3e77ff6955",
-    "zh:339813692f6922664e2c71f8939ac0a00f9808f331dfcbbbe692efdffae5157b",
-    "zh:659e56f3c0e2184b661c3bbe399a94b4e03c65f272965fc66c530b3edb60178d",
-    "zh:8891c7cebd0d5622e50c075391aeac32043ffe3d8aaa7fa37ff4bf40a50f0099",
-    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
-    "zh:efe7db97632cd58df5309bbb28862c65ac3b629ef2f129415a8d401b3e29a62c",
+    "h1:XjdpVL61KtTsuPE8swok3GY8A+Bu3TZs8T2DOEpyiXo=",
+    "zh:15b0a2b2b563d8d40f62f83057d91acb02cd0096f207488d8b4298a59203d64f",
+    "zh:23d919de139f7cd5ebfd2ff1b94e6d9913f0977fcfc2ca02e1573be53e269f95",
+    "zh:38081b3fe317c7e9555b2aaad325ad3fa516a886d2dfa8605ae6a809c1072138",
+    "zh:4a9c5065b178082f79ad8160243369c185214d874ff5048556d48d3edd03c4da",
+    "zh:5438ef6afe057945f28bce43d76c4401254073de01a774760169ac1058830ac2",
+    "zh:60b7fadc287166e5c9873dfe53a7976d98244979e0ab66428ea0dea1ebf33e06",
+    "zh:61c5ec1cb94e4c4a4fb1e4a24576d5f39a955f09afb17dab982de62b70a9bdd1",
+    "zh:a38fe9016ace5f911ab00c88e64b156ebbbbfb72a51a44da3c13d442cd214710",
+    "zh:c2c4d2b1fd9ebb291c57f524b3bf9d0994ff3e815c0cd9c9bcb87166dc687005",
+    "zh:d567bb8ce483ab2cf0602e07eae57027a1a53994aba470fa76095912a505533d",
+    "zh:e83bf05ab6a19dd8c43547ce9a8a511f8c331a124d11ac64687c764ab9d5a792",
+    "zh:e90c934b5cd65516fbcc454c89a150bfa726e7cf1fe749790c7480bbeb19d387",
+    "zh:f05f167d2eaf913045d8e7b88c13757e3cf595dd5cd333057fdafc7c4b7fed62",
+    "zh:fcc9c1cea5ce85e8bcb593862e699a881bd36dffd29e2e367f82d15368659c3d",
   ]
 }
