@@ -1,4 +1,22 @@
 services:
+  traefik:
+    # The official v3 Traefik docker image
+    image: traefik:v3.3
+    container_name: traefik
+    # Enables the web UI and tells Traefik to listen to docker
+    #command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8081:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      #- /Users/sstewart/.colima/default/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yaml:/etc/traefik/traefik.yaml
+      - ./config:/etc/traefik/config/
+
   keycloak:
     image: keycloak/keycloak:latest
     container_name: keycloak
@@ -8,3 +26,20 @@ services:
     command: start-dev
     ports:
       - 8080:8080
+    labels:
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.traefik.me`)"
+  echo-1:
+    image: ealen/echo-server
+    container_name: echo-1
+    ports:
+      - 8880:80
+    labels:
+      - "traefik.http.routers.echo_1.rule=Host(`echo-1.traefik.me`)"
+      - "traefik.http.routers.echo_1.middlewares=secure-api@file"
+  echo-2:
+    image: ealen/echo-server
+    container_name: echo-2
+    ports:
+      - 8881:80
+    labels:
+      - "traefik.http.routers.echo_2.rule=Host(`echo-2.traefik.me`)"

@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    secure-api:
+      plugin:
+        jwt:
+          issuers:
+            - http://keycloak.traefik.me/realms/playground
+          require:
+            aud: account

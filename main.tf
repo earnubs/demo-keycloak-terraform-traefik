@@ -7,11 +7,16 @@ terraform {
   }
 }
 
+# Traefik
+
+
+# Keycloak
+
 provider "keycloak" {
   client_id = "admin-cli"
   username  = "admin"
   password  = "admin"
-  url       = "http://localhost:8080"
+  url       = "http://keycloak.traefik.me:8080"
 }
 
 resource "keycloak_realm" "main" {
@@ -46,12 +51,19 @@ data "keycloak_realm_keys" "realm_keys" {
   status     = ["ACTIVE", "PASSIVE"]
 }
 
-# show certificate of first key:
-output "certificate" {
-  value = data.keycloak_realm_keys.realm_keys.keys[0].certificate
+data "keycloak_openid_client" "main" {
+  realm_id  = keycloak_realm.main.id
+  client_id = keycloak_openid_client.main.client_id
 }
 
 # show public key of first key:
 output "public_key" {
   value = data.keycloak_realm_keys.realm_keys.keys[0].public_key
 }
+
+# show main client secret
+output "client_secret" {
+  value     = data.keycloak_openid_client.main.client_secret
+  sensitive = true
+}
+
