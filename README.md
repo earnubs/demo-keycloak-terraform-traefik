@@ -1,3 +1,11 @@
+# Start up
+
+```sh
+make
+```
+
+Will start 4 containers: keycloak, traefik, and 2 echo servers for testing.
+
 # Services
 
 Traefik UI: <http://localhost:8081/>
