@@ -19,7 +19,7 @@ Echo 2: <http://echo-2.traefik.me/>
 
 echo-1 requires authz:
 
-```bash
+```sh
 curl -I echo-1.traefik.me
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
@@ -30,7 +30,7 @@ Content-Length: 18
 
 echo-2 does not:
 
-```bash
+```sh
 curl -I echo-2.traefik.me
 HTTP/1.1 200 OK
 Content-Length: 653
@@ -41,7 +41,7 @@ Etag: W/"28d-CLMJZ/H/Bce09SvrgCh9CE8HJpA"
 
 Authenticate with the client to request a token that will authorise access to the echo-1 service:
 
-```bash
+```sh
 oauth2c http://keycloak.traefik.me/realms/playground \
 --grant-type authorization_code \
 --client-id "$(terraform output -raw client_id)" \
@@ -54,15 +54,11 @@ oauth2c http://keycloak.traefik.me/realms/playground \
 
 Create an env var $API_TOKEN and use it to access echo-1:
 
-```bash
+```sh
 curl -I -H "Authorization: Bearer $API_TOKEN" http://echo-1.traefik.me/
 HTTP/1.1 200 OK
 Content-Length: 2018
 Content-Type: application/json; charset=utf-8
 Date: Fri, 28 Feb 2025 22:00:35 GMT
 Etag: W/"7e2-7UrEpdRRxpt52GuN3RToydGhybU"
-```
-
-```
-
 ```
