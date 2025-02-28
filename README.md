@@ -1,3 +1,12 @@
+# Services
+
+Traefik UI: <http://localhost:8081/>
+
+Keycloak UI: <http://keycloak.traefik.me/>
+
+Echo 1: <http://echo-1.traefik.me/>
+Echo 2: <http://echo-2.traefik.me/>
+
 # Notes
 
 echo-1 requires authz:
