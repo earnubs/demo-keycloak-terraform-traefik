@@ -7,5 +7,6 @@ clean:
 	docker compose down -v
 
 configure:
-	./scripts/wait/wait-for-it.sh localhost:8080 -t 30 --strict -- \
-		terraform apply -auto-approve
+	./scripts/wait-for-response.sh \
+		http://keycloak.traefik.me:8080/realms/master/protocol/openid-connect/token \
+		&& terraform apply -auto-approve

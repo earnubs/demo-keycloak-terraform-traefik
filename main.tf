@@ -14,11 +14,11 @@ provider "keycloak" {
   username  = "admin"
   password  = "admin"
   url       = "http://keycloak.traefik.me:8080"
+
 }
 
 resource "keycloak_realm" "main" {
   realm = "playground"
-  # depends_on = [docker_container.keycloak]
 }
 
 resource "keycloak_openid_client" "main" {
@@ -57,6 +57,11 @@ data "keycloak_openid_client" "main" {
 # show public key of first key:
 output "public_key" {
   value = data.keycloak_realm_keys.realm_keys.keys[0].public_key
+}
+
+# show main client name 
+output "client_id" {
+  value = data.keycloak_openid_client.main.client_id
 }
 
 # show main client secret
