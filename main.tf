@@ -44,8 +44,8 @@ resource "keycloak_user" "main" {
 }
 
 resource "keycloak_authentication_flow" "main" {
-  alias       = "browser-passkeys"
-  description = "Browser based authentication with passkeys"
+  alias       = "passkeys flow"
+  description = "Browser based authentication with Passkeys"
   provider_id = "basic-flow"
   realm_id    = "playground"
 }
@@ -100,7 +100,7 @@ resource "keycloak_authentication_execution" "passkeys-auth" {
 
 resource "keycloak_authentication_subflow" "organisation" {
   realm_id          = keycloak_realm.main.id
-  alias             = "passkeys Organisation"
+  alias             = "PKFlow - Organisation"
   parent_flow_alias = keycloak_authentication_flow.main.alias
   priority          = 50
   requirement       = "ALTERNATIVE"
@@ -108,12 +108,12 @@ resource "keycloak_authentication_subflow" "organisation" {
 
 resource "keycloak_authentication_subflow" "browser-conditional-organisation" {
   realm_id          = keycloak_realm.main.id
-  alias             = "passkeys Browser - Conditional Organisation"
+  alias             = "PKFlow - Conditional Organisation"
   parent_flow_alias = keycloak_authentication_subflow.organisation.alias
   requirement       = "CONDITIONAL"
 }
 
-resource "keycloak_authentication_execution" "condition-user-configured" {
+resource "keycloak_authentication_execution" "condition-organisation-user-configured" {
   realm_id          = keycloak_realm.main.id
   parent_flow_alias = keycloak_authentication_subflow.browser-conditional-organisation.alias
   authenticator     = "conditional-user-configured"
@@ -131,7 +131,7 @@ resource "keycloak_authentication_execution" "condition-organisation-configured"
 
 resource "keycloak_authentication_subflow" "forms" {
   realm_id          = keycloak_realm.main.id
-  alias             = "passkeys - Forms"
+  alias             = "PKFlow - Forms"
   description       = "Username, password, OTP and other auth forms"
   parent_flow_alias = keycloak_authentication_flow.main.alias
   priority          = 60
@@ -142,15 +142,41 @@ resource "keycloak_authentication_execution" "forms_username" {
   realm_id          = keycloak_realm.main.id
   parent_flow_alias = keycloak_authentication_subflow.forms.alias
   authenticator     = "auth-username-password-form"
+  priority          = 10
   requirement       = "REQUIRED"
 }
 
 resource "keycloak_authentication_subflow" "browser_conditional_otp" {
   realm_id          = keycloak_realm.main.id
-  alias             = "passkeys Browser - Conditional OTP"
+  alias             = "PKFlow - Conditional OTP"
   description       = "Flow to determine if a OTP is required for the authentication"
   parent_flow_alias = keycloak_authentication_subflow.forms.alias
+  priority          = 20
   requirement       = "CONDITIONAL"
+}
+
+resource "keycloak_authentication_execution" "condition-user-configured" {
+  realm_id          = keycloak_realm.main.id
+  parent_flow_alias = keycloak_authentication_subflow.browser_conditional_otp.alias
+  authenticator     = "conditional-user-configured"
+  priority          = 10
+  requirement       = "REQUIRED"
+}
+
+resource "keycloak_authentication_execution" "otp-form" {
+  realm_id          = keycloak_realm.main.id
+  parent_flow_alias = keycloak_authentication_subflow.browser_conditional_otp.alias
+  authenticator     = "auth-otp-form"
+  priority          = 20
+  requirement       = "ALTERNATIVE"
+}
+
+resource "keycloak_authentication_execution" "webauthn-authenticator" {
+  realm_id          = keycloak_realm.main.id
+  parent_flow_alias = keycloak_authentication_subflow.browser_conditional_otp.alias
+  authenticator     = "webauthn-authenticator"
+  priority          = 30
+  requirement       = "ALTERNATIVE"
 }
 
 resource "keycloak_authentication_bindings" "browser_authentication_binding" {
