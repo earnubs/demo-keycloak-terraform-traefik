@@ -13,7 +13,7 @@ provider "keycloak" {
   client_id = "admin-cli"
   username  = "admin"
   password  = "admin"
-  url       = "http://keycloak.traefik.me:8080"
+  url       = "https://keycloak.traefik.me"
 
 }
 

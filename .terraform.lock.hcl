@@ -25,4 +25,3 @@ provider "registry.terraform.io/keycloak/keycloak" {
     "zh:fc2484cc831672e6b5487013279f0fd54bb1e4b8d0370c19bd9730c442f76351",
   ]
 }
-

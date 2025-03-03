@@ -5,10 +5,15 @@ services:
     ports:
       - "80:80"
       - "8081:8080"
+      - "443:443"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8081"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yaml:/etc/traefik/traefik.yaml
       - ./config/traefik:/etc/traefik/config/
+      - certs:/etc/ssl/traefik
 
   keycloak:
     image: keycloak/keycloak:latest
@@ -17,23 +22,44 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_FEATURES: passkeys
+      KC_PROXY_HEADERS: xforwarded
     command: start-dev
     ports:
       - 8080:8080
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.keycloak.rule=Host(`keycloak.traefik.me`)"
+      - "traefik.http.routers.keycloak.tls.domains[0].main=keycloak.traefik.me"
+      - "traefik.http.routers.keycloak.tls.domains[0].sans=keycloak-*.traefik.me"
   echo-1:
     image: ealen/echo-server
     container_name: echo-1
     ports:
       - 8880:80
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.echo_1.rule=Host(`echo-1.traefik.me`)"
       - "traefik.http.routers.echo_1.middlewares=secure-api@file"
+      - "traefik.http.routers.echo_1.tls.domains[0].main=echo_1.traefik.me"
+      - "traefik.http.routers.echo_1.tls.domains[0].sans=echo_1-*.traefik.me"
   echo-2:
     image: ealen/echo-server
     container_name: echo-2
     ports:
       - 8881:80
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.echo_2.rule=Host(`echo-2.traefik.me`)"
+      - "traefik.http.routers.echo_2.tls.domains[0].main=echo_2.traefik.me"
+      - "traefik.http.routers.echo_2.tls.domains[0].sans=echo_2-*.traefik.me"
+
+  reverse-proxy-https-helper:
+    image: alpine
+    command: sh -c "cd /etc/ssl/traefik
+      && wget traefik.me/cert.pem -O cert.pem
+      && wget traefik.me/privkey.pem -O privkey.pem"
+    volumes:
+      - certs:/etc/ssl/traefik
+
+volumes:
+  certs:

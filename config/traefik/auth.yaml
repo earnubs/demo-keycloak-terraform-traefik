@@ -4,6 +4,8 @@ http:
       plugin:
         jwt:
           issuers:
-            - http://keycloak.traefik.me/realms/playground
+            - https://keycloak.traefik.me/realms/playground
+          insecureSkipVerify:
+            - keycloak.traefik.me
           require:
             aud: account

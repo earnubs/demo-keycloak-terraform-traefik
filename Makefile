@@ -8,5 +8,5 @@ clean:
 
 configure:
 	./scripts/wait-for-response.sh \
-		http://keycloak.traefik.me:8080/realms/master/protocol/openid-connect/token \
+		https://keycloak.traefik.me/realms/master/protocol/openid-connect/token \
 		&& terraform apply -auto-approve
