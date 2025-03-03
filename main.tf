@@ -47,7 +47,7 @@ resource "keycloak_authentication_flow" "main" {
   alias       = "passkeys flow"
   description = "Browser based authentication with Passkeys"
   provider_id = "basic-flow"
-  realm_id    = "playground"
+  realm_id    = keycloak_realm.main.realm
 }
 
 # first execution
