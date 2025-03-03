@@ -174,7 +174,7 @@ resource "keycloak_authentication_execution" "otp-form" {
 resource "keycloak_authentication_execution" "webauthn-authenticator" {
   realm_id          = keycloak_realm.main.id
   parent_flow_alias = keycloak_authentication_subflow.browser_conditional_otp.alias
-  authenticator     = "webauthn-authenticator"
+  authenticator     = "webauthn-authenticator-passwordless"
   priority          = 30
   requirement       = "ALTERNATIVE"
 }
